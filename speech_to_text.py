@@ -6,7 +6,8 @@ from datasets import load_dataset
 # load model and processor
 processor = WhisperProcessor.from_pretrained("openai/whisper-tiny")
 model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-tiny")
-model.config.forced_decoder_ids = None
+model.config.forced_decoder_ids = None                                                          # automatically task=transcribe for english
+# forced_decoder_ids = processor.get_decoder_prompt_ids(language="french", task="transcribe")   # if transcribe different language
 
 ########### record audio throgh microphone
 import librosa
@@ -59,7 +60,7 @@ def play_audio(file_name):
     pygame.mixer.quit()
     pygame.quit()
 
-def speech_to_text(file_path, duration=5, sample_rate=16000):
+def speech_to_text(file_path, translate=False, duration=5, sample_rate=16000):
     # Load the audio file
     # waveform, sample_rate = torchaudio.load(file_path)
     waveform, sample_rate = librosa.load(file_path, sr=None, mono=True)
@@ -69,6 +70,10 @@ def speech_to_text(file_path, duration=5, sample_rate=16000):
 
     # Generate the token IDs
     predicted_ids = model.generate(input_features)
+    
+    if translate:
+        forced_decoder_ids = processor.get_decoder_prompt_ids(language="french", task="translate")
+        predicted_ids = model.generate(input_features, forced_decoder_ids=forced_decoder_ids)
 
     # Decode the token IDs to text
     transcription = processor.batch_decode(predicted_ids, skip_special_tokens=True)
