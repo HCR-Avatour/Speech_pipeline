@@ -26,6 +26,6 @@ if __name__ == "__main__":
 
     speech = model.generate_speech(inputs["input_ids"], speaker_embeddings, vocoder=vocoder)
 
-    sf.write("speech.wav", speech.numpy(), samplerate=16000)
+    sf.write("samples/speech.wav", speech.numpy(), samplerate=16000)
 
     # https://huggingface.co/datasets/Matthijs/cmu-arctic-xvectors

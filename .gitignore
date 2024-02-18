@@ -31,3 +31,13 @@ lib64/
 
 # generated audio files
 samples/*
+
+# react build files
+build/*
+
+# react node modules
+speech_app/node_modules/*
+speech_app/package-lock.json
+
+# ignore react cors server for testing
+cors-server/*

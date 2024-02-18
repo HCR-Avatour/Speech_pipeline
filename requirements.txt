@@ -6,3 +6,8 @@ pyaudio
 wave
 pygame
 soundfile
+sentencepiece
+# MoviePy
+# pydub
+flask
+flask_cors

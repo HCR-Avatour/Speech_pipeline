@@ -59,10 +59,20 @@ def play_audio(file_name):
 
     pygame.mixer.quit()
     pygame.quit()
+    
+def webm_to_wav(file_path, sample_rate=16000):
+    import subprocess
+
+    output_wav_file = file_path.replace(".webm", ".wav")
+    command = "ffmpeg -i "+file_path+" -ab 160k -ac 2 -ar "+str(sample_rate)+" -vn "+output_wav_file+" -y"
+    subprocess.call(command, shell=True)
+    
+    return output_wav_file
 
 def speech_to_text(file_path, translate=False, duration=5, sample_rate=16000):
     # Load the audio file
     # waveform, sample_rate = torchaudio.load(file_path)
+    print("Loading audio file from ", file_path)
     waveform, sample_rate = librosa.load(file_path, sr=None, mono=True)
 
     # Preprocess the audio file
@@ -89,3 +99,5 @@ if __name__ == "__main__":
     
     transcription = speech_to_text(output_wav_file)
     print("Transcription: ", transcription)
+    
+    
