@@ -46,7 +46,7 @@ export default function RecordComponent() {
       formData.append('fileCounter', counter.toString());
 
       console.log('Sending audio to server ', 'audio'+counter+'.webm');
-      const response = await fetch('http://127.0.0.1:5000', { // update IP here with container IP
+      const response = await fetch('http://172.17.123.115:5000/synth', { // update IP here with container IP (if run in wsl, get wsl ip through "wsl hostname -I")
         method: 'POST',
         body: formData
         }

@@ -31,7 +31,7 @@ def speech_pipeline(file_path):
     print("LLM response: ", llm_response)
     
     output_file = file_path.split(".")[0] + "_pipeline.wav"
-    print("Output file: ", output_file)
+    print("Output file: ", output_file, " from ", file_path)
     speech = text_to_speech.get_audio_from_text(llm_response, output_file)
     speech_to_text.play_audio(output_file)
 

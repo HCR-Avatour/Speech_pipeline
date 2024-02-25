@@ -31,6 +31,11 @@ COPY . .
 
 # Expose the port that the application listens on.
 EXPOSE 5000
+# # Expose the IP address of the server
+# ENV SERVER_IP=localhost
 
 # Run the application.
-CMD python3 pipeline_server.py
+CMD python3 pipeline_server.py -u
+
+
+# docker compose up --build
