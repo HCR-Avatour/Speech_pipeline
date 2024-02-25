@@ -1,20 +1,53 @@
-# Use the official Python base image
-FROM python:3.9-slim
+FROM ubuntu:latest
 
-# Set the working directory in the container
-WORKDIR /app
+SHELL ["/bin/bash", "-c"]
 
-# Copy the requirements file to the container
-COPY requirements.txt .
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y \
+       python3.11 \
+       python3-pip \
+       git \
+       curl \
+       sudo
 
-# Install the Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN apt-get install libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0 -y
+RUN apt-get install ffmpeg libav-tools -y
 
-# Copy the Flask app code to the container
-COPY app.py .
+WORKDIR /
 
-# Expose the port on which the Flask server will run
+# Create a non-privileged user that the app will run under.
+# See https://docs.docker.com/go/dockerfile-user-best-practices/
+ARG UID=10001
+RUN adduser \
+    --disabled-password \
+    --gecos "" \
+    --home "/nonexistent" \
+    --shell "/sbin/nologin" \
+    --no-create-home \
+    --uid "${UID}" \
+    appuser
+# RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
+
+# Download dependencies as a separate step to take advantage of Docker's caching.
+# Leverage a cache mount to /root/.cache/pip to speed up subsequent builds.
+# Leverage a bind mount to requirements.txt to avoid having to copy them into
+# into this layer.
+RUN python3 -m pip install --upgrade pip
+RUN --mount=type=cache,target=/root/.cache/pip \
+    --mount=type=bind,source=requirements.txt,target=requirements.txt \
+    python3 -m pip install -r requirements.txt
+
+# Switch to the non-privileged user to run the application.
+USER appuser
+
+# Copy the source code into the container.
+COPY . .
+
+# Expose the port that the application listens on.
 EXPOSE 5000
 
-# Set the command to run the Flask server
-CMD ["python", "app.py"]
+# Run the application.
+CMD python3 pipeline_server.py
+
+# CMD ["bash"] # open terminal

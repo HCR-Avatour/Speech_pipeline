@@ -1,4 +1,4 @@
-CONTAINER_NAME := my-container
+CONTAINER_NAME := hcr_speech
 TAG_NAME := latest
 
 stop:

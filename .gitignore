@@ -41,3 +41,6 @@ speech_app/package-lock.json
 
 # ignore react cors server for testing
 cors-server/*
+
+# ignore models
+models/*

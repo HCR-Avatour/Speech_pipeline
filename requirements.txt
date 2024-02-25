@@ -2,6 +2,8 @@ torch
 transformers
 datasets
 librosa
+# sudo apt-get install libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0
+# sudo apt-get install ffmpeg libav-tools
 pyaudio
 wave
 pygame
@@ -11,3 +13,7 @@ sentencepiece
 # pydub
 flask
 flask_cors
+
+# LLM
+langchain
+gpt4all
