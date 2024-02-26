@@ -15,7 +15,7 @@ RUN apt-get install libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0
 RUN apt-get install ffmpeg -y
 
 # Create the working directory
-WORKDIR /
+WORKDIR /speech_pipeline
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a cache mount to /home/appuser/.cache/pip to speed up subsequent builds.
@@ -30,7 +30,7 @@ RUN --mount=type=cache,target=/home/appuser/.cache/pip \
 COPY . .
 
 # Expose the port that the application listens on.
-EXPOSE 5000
+EXPOSE 5005
 # # Expose the IP address of the server
 # ENV SERVER_IP=localhost
 
