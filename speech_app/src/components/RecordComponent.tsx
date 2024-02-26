@@ -64,9 +64,10 @@ export default function RecordComponent() {
 
   const addAudioElement = (blob: Blob) => {
     const url = URL.createObjectURL(blob);
-    const audio = document.createElement('audio');
-    audio.src = url;
-    audio.controls = true;
+    // const audio = document.createElement('audio');
+    // audio.src = url;
+    // audio.controls = true;
+    // console.log('Audio duration:', audio.duration);
     setAudioBlob(blob);
 
     // Call the speech_pipeline API
