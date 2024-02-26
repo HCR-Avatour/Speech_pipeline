@@ -8,6 +8,10 @@ app = Flask(__name__)
 # add cors support
 CORS(app)
 
+@app.route('/', methods=['POST'])
+def index():
+    return 'Speech Server is running', 200
+
 @app.route('/synth', methods=['POST'])
 def synth():
     try:
@@ -18,7 +22,7 @@ def synth():
         file_path = './samples/'+ audio_file.filename      
         print(audio_file, file_path, counter,  audio_file.filename.split(".")[1])
         
-        if audio_file.filename.split(".")[1] == "wav":
+        if audio_file.filename.split(".")[2] == "wav":
             print("Initial audio received !", audio_file.filename)
             return 'Initial audio received !' + audio_file.filename, 200
         
@@ -41,6 +45,6 @@ def synth():
         print(f"Error processing file: {str(e)}")
         os.remove(file_path)
         return 'Error processing file', 500
-
+    
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5005)

@@ -23,9 +23,9 @@ from langchain_community.embeddings import GPT4AllEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores.faiss import FAISS
 # from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain.chains import create_history_aware_retriever
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain.chains import create_retrieval_chain
+# from langchain.chains import create_history_aware_retriever
+# from langchain.chains.combine_documents import create_stuff_documents_chain
+# from langchain.chains import create_retrieval_chain
 
 from langchain.prompts import (
     ChatPromptTemplate,
