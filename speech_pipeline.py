@@ -11,7 +11,7 @@ recording_file = "./samples/Recording2.wav"
 pipeline_file = "./samples/pipeline.wav"
 test_react = "./samples/audio.wav"
 
-url = 'http://localhost:3001' # to be changed to the avatour_web URL
+url = 'http://localhost:3000' # to be changed to the avatour_web URL
 
 def speech_pipeline(file_path):
     print("Speech Pipeline...")
@@ -40,8 +40,7 @@ def speech_pipeline(file_path):
     # speech_to_text.play_audio(output_file)
     
     # HTTP POST request to share the audio file to a server IP
-    share_transcript(llm_response, url) # sending llm transcript to JS website
-    share_output_audio(output_file, url) # sending audio file to JS website
+    share_transcript_audio(llm_response, output_file, url) # sending llm TRANSCRIPT and AUDIO to JS website
     
     if file_path.split(".")[1] != "wav":
         # if we want to remove the wav audio
@@ -58,29 +57,21 @@ def wait_until_file_exists(file_path):
         time_count+=1
     return "wait_until_file_exists: Error on opening file "+ file_path
 
-def share_transcript(transcript, url):
+def share_transcript_audio(transcript, file_path, url):
     """
         HTTP POST request to share the transcript to a server IP
     """
     print("share_transcript Transcript: ", transcript)
+    print("share_output_audio File path: ", file_path)
+    
     json_transcript = {"transcript": transcript}
-    response = requests.post(url, json=json_transcript)
+    files = {'audioFile': open(file_path, 'rb')}
+    
+    response = requests.post(url, json=json_transcript, files=files)
     if response.status_code == 200:
         print('share_transcript Transcript successfully posted.')
     else:
         print(f'share_transcript Failed to post transcript. Status code: {response.status_code}')
-        
-def share_output_audio(file_path, url):
-    """
-        HTTP POST request to share the audio file to a server IP
-    """
-    print("share_output_audio File path: ", file_path)
-    files = {'audioFile': open(file_path, 'rb')}
-    response = requests.post(url, files=files)
-    if response.status_code == 200:
-        print('share_output_audio Audio file successfully posted.')
-    else:
-        print(f'share_output_audio Failed to post audio file. Status code: {response.status_code}')
 
 if __name__ == "__main__":
     print("Speech Pipeline")

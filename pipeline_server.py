@@ -20,9 +20,9 @@ def synth():
         audio_file = request.files['audioFile']
         counter = request.form.get('fileCounter')
         file_path = './samples/'+ audio_file.filename      
-        print(audio_file, file_path, counter,  audio_file.filename.split(".")[1])
+        print(audio_file, file_path, counter,  file_path.split(".")[2])
         
-        if audio_file.filename.split(".")[2] == "wav":
+        if file_path.split(".")[2] == "wav":
             print("Initial audio received !", audio_file.filename)
             return 'Initial audio received !' + audio_file.filename, 200
         
