@@ -87,4 +87,4 @@ if __name__ == "__main__":
     # speech = text_to_speech.get_audio_from_text(transcription, pipeline_file)
     # speech_to_text.play_audio(pipeline_file)
     # speech_pipeline(pipeline_file)
-    share_transcript("HI, TEST here!")
+    share_transcript_audio("HI, TEST here!", test_react, url)
