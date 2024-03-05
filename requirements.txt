@@ -1,10 +1,12 @@
+blinker==1.4
+
 torch
 transformers
 datasets
 librosa
 # sudo apt-get install libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0
 # sudo apt-get install ffmpeg libav-tools
-pyaudio
+# pyaudio # to record audio through python
 wave
 pygame
 soundfile
@@ -16,4 +18,5 @@ flask_cors
 
 # LLM
 langchain
-gpt4all
+llama-cpp-python
+# gpt4all

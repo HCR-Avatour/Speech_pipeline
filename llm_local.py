@@ -10,7 +10,7 @@ index_path = "./index/iGridd_Demo_book_index"
 # ##### LANGCHAIN #####
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.prompts import PromptTemplate
-from langchain_community.llms import GPT4All
+from langchain_community.llms import LlamaCpp #,GPT4All
 from langchain.chains import LLMChain, ConversationChain, ConversationalRetrievalChain
 # Memory
 from langchain.schema import ( SystemMessage, messages_to_dict )
@@ -63,7 +63,8 @@ local_path = (
 callbacks = [StreamingStdOutCallbackHandler()]
 
 # Verbose is required to pass to the callback manager
-llm = GPT4All(model=local_path, callbacks=callbacks, verbose=True)
+# llm = GPT4All(model=localp_path, callbacks=callbacks, verbose=True)
+llm = LlamaCpp(model_path=local_path, callbacks=callbacks, verbose=True)
 
 # If you want to use a custom model add the backend parameter
 # Check https://docs.gpt4all.io/gpt4all_python.html for supported backends

@@ -44,3 +44,4 @@ cors-server/*
 
 # ignore models
 models/*
+save/*
