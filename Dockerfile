@@ -1,4 +1,5 @@
-FROM ubuntu:latest
+FROM ubuntu:latest 
+# dustynv/langchain:samples-r36.2.0
 
 SHELL ["/bin/bash", "-c"]
 # RUN cat /etc/os-release && false
@@ -37,8 +38,8 @@ EXPOSE 5005
 
 # Run the application.
 # CMD python3 pipeline_server.py -u
-#CMD ["bash", "-c", "python3 pipeline_server.py -u"]
- CMD ["bash", "-c"]
+CMD ["bash", "-c", "python3 pipeline_server.py -u"]
+# CMD ["bash", "-c"]
 RUN apt install -y nano
 
 # docker compose up --build

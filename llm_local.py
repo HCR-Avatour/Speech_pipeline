@@ -64,7 +64,7 @@ callbacks = [StreamingStdOutCallbackHandler()]
 
 # Verbose is required to pass to the callback manager
 # llm = GPT4All(model=localp_path, callbacks=callbacks, verbose=True)
-llm = LlamaCpp(model_path=local_path, callbacks=callbacks, verbose=True)
+llm = LlamaCpp(model_path=local_path, callbacks=callbacks, verbose=True, max_tokens_limit=100)
 
 # If you want to use a custom model add the backend parameter
 # Check https://docs.gpt4all.io/gpt4all_python.html for supported backends
@@ -87,9 +87,6 @@ prompt = ChatPromptTemplate.from_messages(
     [
         SystemMessage(
             content="""You are a helpful assistant and travel guide.
-            You can also engage in some casual talk, like answering greetings and simple questions like "How/Who are you?". 
-            At the beginning of a conversation in your first message, introduce yourself. 
-            DO NOT COMPLETE THE SENTENCE!
             ONLY answer the user's questions regarding travelling. If you do not know how to answer, reply by saying you do not know. Do not reply to any irrelevant questions."""
         ),  # The persistent system prompt
         MessagesPlaceholder(
@@ -158,9 +155,9 @@ def callLLM(user_message, past_user_inputs=[], generated_responses=[]):
         response = extracted_section
 
     # 3. Print the extracted section
-    print("-------")
-    print("extracted response: ", extracted_section)
-    print("-------")
+    # print("-------")
+    # print("extracted response: ", extracted_section)
+    # print("-------")
     # 2
     # response = conv_retr_chain.invoke(user_message)
     # 3
@@ -174,8 +171,8 @@ def callLLM(user_message, past_user_inputs=[], generated_responses=[]):
     latency = end_time - start_time
     print(f"Latency: {latency} seconds")
     print("-------")
-    print("Response: ", str(response))
-    print("-------")
+    # print("Response: ", str(response))
+    # print("-------")
     # current_memory = messages_to_dict(llm_chain.memory.chat_memory.messages)
     # print("Current Memory: ", current_memory)
     # 2 & 3
