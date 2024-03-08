@@ -36,14 +36,14 @@ def speech_pipeline(file_path):
     
     output_file = "."+file_path.split(".")[1] + "_pipeline.wav"
     print("Output file: ", output_file, " from ", file_path)
-    # speech = text_to_speech.get_audio_from_text(llm_response, output_file)  ## TESTING - works on ubuntu not on langchain image
+    speech = text_to_speech.get_audio_from_text(llm_response, output_file)  ## TESTING - works on ubuntu not on langchain image
     # speech_to_text.play_audio(output_file)
     
     # HTTP POST request to share the audio file to a server IP
     print("Sharing transcript and audio to server...")
-    # share_transcript_audio(llm_response, output_file, url) # sending llm TRANSCRIPT and AUDIO to JS website ## TESTING - works on ubuntu not on langchain image
+    share_transcript_audio(llm_response, output_file, url) # sending llm TRANSCRIPT and AUDIO to JS website ## TESTING - works on ubuntu not on langchain image
     # share_transcript_audio(llm_response, pipeline_file, url) # sending llm TRANSCRIPT and AUDIO to JS website
-    share_transcript_audio("test Pipeline file", pipeline_file, url) # sending llm TRANSCRIPT and AUDIO to JS website
+    # share_transcript_audio("test Pipeline file", pipeline_file, url) # sending llm TRANSCRIPT and AUDIO to JS website
     
     # if file_path.split(".")[1] != "wav":
     #     # if we want to remove the wav audio

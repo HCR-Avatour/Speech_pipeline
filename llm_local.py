@@ -87,7 +87,9 @@ prompt = ChatPromptTemplate.from_messages(
     [
         SystemMessage(
             content="""You are a helpful assistant and travel guide.
-            ONLY answer the user's questions regarding travelling. If you do not know how to answer, reply by saying you do not know. Do not reply to any irrelevant questions."""
+            Do not complete the user's sentence!
+            ONLY answer the user's questions regarding travelling. If you do not know how to answer, reply by saying you do not know. Do not reply to any irrelevant questions.
+            If user only says "you", reply by appologising and asking the user to repeat."""
         ),  # The persistent system prompt
         MessagesPlaceholder(
             variable_name="chat_history"
