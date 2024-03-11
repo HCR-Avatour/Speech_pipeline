@@ -25,7 +25,7 @@ RUN apt-get install ffmpeg -y
 # Create the working directory
 WORKDIR /work
 # Copy the source code into the container.
-COPY . .
+# COPY . .
 
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install -r requirements.txt

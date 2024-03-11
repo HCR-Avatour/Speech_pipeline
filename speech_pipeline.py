@@ -32,6 +32,17 @@ def speech_pipeline(file_path):
     
     print("Passing to LLM...")
     llm_response = llm_local.callLLM(transcription)
+    
+    # url_transcription = transcription.replace(" ", "%20")
+    # url = 'http://ai.avatour.duckdns/?prompt='+url_transcription # update ip to the new wrapper of the local_llm from jetson-containers
+    # llm_response = requests.get(url)
+    
+    # url = ...
+    # data = {'input_data': transcription}
+    # response = requests.post(url, json=data)
+    # print("response:: ", response)
+    # llm_response = response.json()['result']
+    
     print("LLM response: ", llm_response)
     
     output_file = "."+file_path.split(".")[1] + "_pipeline.wav"
@@ -45,9 +56,9 @@ def speech_pipeline(file_path):
     # share_transcript_audio(llm_response, pipeline_file, url) # sending llm TRANSCRIPT and AUDIO to JS website
     # share_transcript_audio("test Pipeline file", pipeline_file, url) # sending llm TRANSCRIPT and AUDIO to JS website
     
-    # if file_path.split(".")[1] != "wav":
-    #     # if we want to remove the wav audio
-    #     os.remove(wav_file)
+    if file_path.split(".")[1] != "wav":
+        # if we want to remove the wav audio
+        os.remove(wav_file)
     
 def wait_until_file_exists(file_path):
     time_count = 0

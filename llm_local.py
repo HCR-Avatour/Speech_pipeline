@@ -14,7 +14,7 @@ from langchain_community.llms import LlamaCpp #,GPT4All
 from langchain.chains import LLMChain, ConversationChain, ConversationalRetrievalChain
 # Memory
 from langchain.schema import ( SystemMessage, messages_to_dict )
-from langchain.memory import ConversationBufferMemory
+from langchain.memory import ConversationBufferMemory, ConversationSummaryBufferMemory 
 # Loaders
 from langchain_community.document_loaders import PyPDFLoader #UnstructuredURLLoader
 from langchain_community.document_loaders.merge import MergedDataLoader
@@ -64,7 +64,8 @@ callbacks = [StreamingStdOutCallbackHandler()]
 
 # Verbose is required to pass to the callback manager
 # llm = GPT4All(model=localp_path, callbacks=callbacks, verbose=True)
-llm = LlamaCpp(model_path=local_path, callbacks=callbacks, verbose=True, max_tokens_limit=100)
+llm = LlamaCpp(model_path=local_path, callbacks=callbacks, verbose=True, max_tokens_limit=50)
+summary_memory_llm = LlamaCpp(model_path=local_path, callbacks=callbacks, verbose=True, max_tokens_limit=100)
 
 # If you want to use a custom model add the backend parameter
 # Check https://docs.gpt4all.io/gpt4all_python.html for supported backends
@@ -100,7 +101,7 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
-memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True, ai_prefix="ASSISTANT:")
+memory = ConversationSummaryBufferMemory(llm=summary_memory_llm, memory_key="chat_history", return_messages=True, ai_prefix="ASSISTANT:")
 
 # 1
 llm_chain = LLMChain(prompt=prompt, llm=llm, verbose=True, memory=memory)
@@ -125,36 +126,40 @@ llm_chain = LLMChain(prompt=prompt, llm=llm, verbose=True, memory=memory)
 def callLLM(user_message, past_user_inputs=[], generated_responses=[]):
     start_time = time.time()
     
-    # 0. TEST
-    # response = "test"
-    # 1
-    response = llm_chain.predict(human_input=user_message)
-    # Print each word as it is generated
-    start_markers = ["CHATBOT:", "Bot:", "AI:", "ASSISTANT:"]
-    end_markers = ["USER:", "HUMAN:"]
-    extracted_section = response
-
-    for start_marker in start_markers:
-        start_index = extracted_section.lower().find(start_marker.lower())
-        if start_index != -1:
-            extracted_section = extracted_section[start_index + len(start_marker):]
-            break
-        
-    if extracted_section:
-        start_index = 0
-        start_index = ""
-        
-    for end_marker in end_markers:
-        end_index = extracted_section.lower().find(end_marker.lower())
-        if end_index != -1:
-            extracted_section = extracted_section[:end_index]
-            break
-
-    # If none of the markers are found, use the entire response
-    if extracted_section is None:
+    # remove whitespace from user_message, set it to lower case and check if it only contains the word you
+    empty_msg = user_message[0].strip().replace(" ", "").lower()[0] == 'you'
+    print(user_message[0].strip().replace(" ", "").lower()[0], empty_msg)
+    if not empty_msg:
+        response = llm_chain.predict(human_input=user_message)
+        # Print each word as it is generated
+        start_markers = ["CHATBOT:", "Bot:", "AI:", "ASSISTANT:"]
+        end_markers = ["USER:", "HUMAN:"]
         extracted_section = response
+
+        for start_marker in start_markers:
+            start_index = extracted_section.lower().find(start_marker.lower())
+            if start_index != -1:
+                extracted_section = extracted_section[start_index + len(start_marker):]
+                break
+            
+        if extracted_section:
+            start_index = 0
+            start_index = ""
+            
+        for end_marker in end_markers:
+            end_index = extracted_section.lower().find(end_marker.lower())
+            if end_index != -1:
+                extracted_section = extracted_section[:end_index]
+                break
+
+        # If none of the markers are found, use the entire response
+        if extracted_section is None:
+            extracted_section = response
+        else:
+            response = extracted_section
     else:
-        response = extracted_section
+        print("Empty message")
+        response = "I'm sorry. Could you please repeat?"
 
     # 3. Print the extracted section
     # print("-------")
