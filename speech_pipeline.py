@@ -5,6 +5,7 @@ import time
 import os
 import requests
 import json
+import urllib.parse
 
 # Accepted file formats: wav, ogg, flac
 recording_file = "./samples/Recording2.wav"
@@ -31,32 +32,30 @@ def speech_pipeline(file_path):
         print("Transcription of original: ", transcription)
     
     print("Passing to LLM...")
-    llm_response = llm_local.callLLM(transcription)
+    # llm_response = llm_local.callLLM(transcription)
     
-    # url_transcription = transcription.replace(" ", "%20")
-    # url = 'http://ai.avatour.duckdns/?prompt='+url_transcription # update ip to the new wrapper of the local_llm from jetson-containers
-    # llm_response = requests.get(url)
-    
-    # url = ...
-    # data = {'input_data': transcription}
-    # response = requests.post(url, json=data)
-    # print("response:: ", response)
-    # llm_response = response.json()['result']
+    url_transcription = urllib.parse.quote(transcription[0]) # encode it to url friendly format
+    ai_url = 'http://ai.avatour.duckdns.org/?prompt='+url_transcription # update ip to the new wrapper of the local_llm from jetson-containers
+    response = requests.get(ai_url)
+    # print(ai_url, str(response))
+    llm_response = response.text[:-4]
     
     print("LLM response: ", llm_response)
+    if response.status_code == 200:
+        share_transcript_audio(llm_response, url)
     
-    output_file = "."+file_path.split(".")[1] + "_pipeline.wav"
-    print("Output file: ", output_file, " from ", file_path)
-    speech = text_to_speech.get_audio_from_text(llm_response, output_file)  ## TESTING - works on ubuntu not on langchain image
-    # speech_to_text.play_audio(output_file)
+    # output_file = "."+file_path.split(".")[1] + "_pipeline.wav"
+    # print("Output file: ", output_file, " from ", file_path)
+    # speech = text_to_speech.get_audio_from_text(llm_response, output_file)  ## TESTING - works on ubuntu not on langchain image
+    # # speech_to_text.play_audio(output_file)
     
-    # HTTP POST request to share the audio file to a server IP
-    print("Sharing transcript and audio to server...")
-    share_transcript_audio(llm_response, output_file, url) # sending llm TRANSCRIPT and AUDIO to JS website ## TESTING - works on ubuntu not on langchain image
-    # share_transcript_audio(llm_response, pipeline_file, url) # sending llm TRANSCRIPT and AUDIO to JS website
-    # share_transcript_audio("test Pipeline file", pipeline_file, url) # sending llm TRANSCRIPT and AUDIO to JS website
+    # # HTTP POST request to share the audio file to a server IP
+    # print("Sharing transcript and audio to server...")
+    # share_transcript_audio(llm_response, url, output_file) # sending llm TRANSCRIPT and AUDIO to JS website ## TESTING - works on ubuntu not on langchain image
+    # # share_transcript_audio(llm_response, pipeline_file, url) # sending llm TRANSCRIPT and AUDIO to JS website
+    # share_transcript_audio("test Pipeline file",url , pipeline_file) # sending llm TRANSCRIPT and AUDIO to JS website
     
-    if file_path.split(".")[1] != "wav":
+    if file_path.split(".")[2] != "wav":
         # if we want to remove the wav audio
         os.remove(wav_file)
     
@@ -71,17 +70,25 @@ def wait_until_file_exists(file_path):
         time_count+=1
     return "wait_until_file_exists: Error on opening file "+ file_path
 
-def share_transcript_audio(transcript, file_path, url):
+def share_transcript_audio(transcript, url, file_path=""):
     """
         HTTP POST request to share the transcript to a server IP
     """
-    # print("share_transcript Transcript: ", transcript)
-    # print("share_output_audio File path: ", file_path)
+    print("share_transcript Transcript: ", transcript)
+    print("share_output_audio File path: ", file_path)
     
+    # if transcript == None: transcript = "..."
     json_transcript = {"transcript": transcript}
-    files = {"audioFile": open(file_path, 'rb')}
+    print(json_transcript)
     
-    response = requests.post(url, data=json_transcript, files=files) #, files=files
+    if file_path == "":
+        print("---- Sending transcript only")
+        response = requests.post(url, json=json_transcript) # sending llm TRANSCRIPT to JS website
+    else:
+        print("---- Sending transcript and audio")
+        files = {"audioFile": open(file_path, 'rb')}
+        response = requests.post(url, data=json_transcript, files=files) # sending llm TRANSCRIPT and AUDIO to JS website
+        
     if response.status_code == 200:
         print('share_transcript Transcript successfully posted.')
     else:

@@ -127,8 +127,8 @@ def callLLM(user_message, past_user_inputs=[], generated_responses=[]):
     start_time = time.time()
     
     # remove whitespace from user_message, set it to lower case and check if it only contains the word you
-    empty_msg = user_message[0].strip().replace(" ", "").lower()[0] == 'you'
-    print(user_message[0].strip().replace(" ", "").lower()[0], empty_msg)
+    empty_msg = user_message[0].strip().replace(" ", "").lower() == 'you'
+    print(user_message[0].strip().replace(" ", "").lower(), empty_msg)
     if not empty_msg:
         response = llm_chain.predict(human_input=user_message)
         # Print each word as it is generated
