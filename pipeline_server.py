@@ -1,8 +1,10 @@
 from flask import Flask, request
 from flask_cors import CORS
-from speech_pipeline import speech_pipeline
+from speech_pipeline import speech_pipeline, connect_to_llm
 import time
 import os
+import urllib.parse
+import json
 
 app = Flask(__name__)
 # add cors support
@@ -44,6 +46,32 @@ def synth():
     except Exception as e:
         print(f"Error processing file: {str(e)}")
         os.remove(file_path)
+        return 'Error processing file', 500
+    
+@app.route('/synth_vr', methods=['POST'])
+def synth_vr():
+    try:
+        print("Received request to from VR to talk with LLM")
+        data = request.get_data()
+        message = urllib.parse.unquote_plus(data.decode('utf-8'))
+        data = json.loads(message)
+        
+        if data is None:
+            print("No data receved")
+            return "No data received", 400
+        
+        transcription = data['transcription']
+
+        try:
+            # Process the file using your speech_pipeline function
+            connect_to_llm(transcription)
+        except Exception as e:
+            print(f"Error processing file with speech_pipeline: {str(e)}")
+            return 'Error processing file', 500
+
+        return 'Successfully conversed with LLM.'
+    except Exception as e:
+        print(f"Error processing file: {str(e)}")
         return 'Error processing file', 500
     
 if __name__ == '__main__':
