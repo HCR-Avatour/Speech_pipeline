@@ -60,11 +60,11 @@ def synth_vr():
             print("No data receved")
             return "No data received", 400
         
-        transcription = data['transcription']
+        transcript = data['transcript']
 
         try:
             # Process the file using your speech_pipeline function
-            connect_to_llm(transcription)
+            connect_to_llm(transcript)
         except Exception as e:
             print(f"Error processing file with speech_pipeline: {str(e)}")
             return 'Error processing file', 500
