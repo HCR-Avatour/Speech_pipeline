@@ -1,7 +1,5 @@
 from transformers import WhisperProcessor, WhisperForConditionalGeneration
 from datasets import load_dataset
-# from huggingface_hub import login
-# login(token="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", add_to_git_credential=False)
 
 # load model and processor
 processor = WhisperProcessor.from_pretrained("openai/whisper-tiny")
