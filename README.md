@@ -21,4 +21,4 @@ Alexandra Neagu
 
 ## Notes
 Working on Python <=3.11 (error for 3.12).
-Developed in Docker Container.
+Developed in Docker Container. To run: `docker compose up --build -d`
